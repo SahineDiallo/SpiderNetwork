@@ -43,7 +43,7 @@ Search for friend online and invite them to join you.
 
 ## Preview Images
 
-![image](https://user-images.githubusercontent.com/101523484/163738412-c0bd3240-2e08-47c8-89c4-ae6da19ade30.gif)
+![image](https://i.imgur.com/F2cu8v9.gif)
 ![image](https://user-images.githubusercontent.com/101523484/163738733-3ab1d450-f309-4077-8fa6-39fa36b41fc1.png)
 ![image](https://user-images.githubusercontent.com/101523484/163738805-a3fe3306-6cc2-4d12-9cd6-2cf16d0e8651.gif)
 ![image](https://user-images.githubusercontent.com/101523484/163738849-a364929b-104c-44da-bbc7-6a4513cea0ff.gif)
