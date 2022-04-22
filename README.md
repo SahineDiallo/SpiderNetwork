@@ -3,8 +3,8 @@ Spider Network is a social media Network allows to connect with peers and discus
 Search for friend online and invite them to join you.
 
 
-## How to run sagaSoftware application locally in your machine. 
-1. Either fork or clone the application by using ' '
+## How to run SpiderNetwork application locally in your machine. 
+1. Either fork or clone the application
 2. Open and navigate through the folder where the requirements.txt is located and install the dependencies 'pip install -r requirements.txt'
 3. start the local server 'python manage.py runserver' in the command prompt and make you are in the same directory where manage.py is located.
 4. open your browser and visit 'localhost:8000/accounts/login' there you will be able to even explore about the demo accounts without registration. 
