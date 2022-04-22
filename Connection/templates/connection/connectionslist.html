@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    {% include 'landing/partials/head.html' %}
+  </head>
+  <body>
+    <div class="wrapper">
+      {% include "landing/partials/header.html" %}
+      <section class="companies-info">
+        <div class="container">
+          {% if is_profile_owner %}
+          <div class="company-title">
+            <h3>All Connections Request</h3>
+          </div>
+          <div class="companies-list mb-1">
+            <div class="row">
+              {% for connection in con_request %}
+              <div class="col-lg-3 col-md-4 col-sm-6 col-12" id="col_parent_{{connection.id}}">
+                <div class="company_profile_info">
+                  <div class="company-up-info">
+                    <img src="{{connection.sender.profile.avatar.url}}" alt="" />
+                    <h3>{{connection.sender.username}}</h3>
+                    <h4>Graphic Designer</h4>
+                    <ul>
+                      <li>
+                        <a class="btn btn-outline-success follow" data-request-id="{{connection.id}}" role="button" data-role="AcceptForgeLink">
+                          Accept
+                        </a>
+                      </li>
+                      <li>
+                        <a class="btn btn-outline-dark hire-us" data-request-id="{{connection.id}}" role="button" data-role="DeleteForgeLink">
+                          Delete
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <a href="{% url 'profile-list-view' user_slug=connection.sender.profile.profile_slug %}" title=""  class="view-more-pro" >View Profile</a>
+                </div>
+              </div>
+              {% empty %}
+              <div class="row flex-column align-items-center m-auto ">
+                <h1 style="font-size: 30px; font-weight: 500; margin-bottom: 20px;"> You have no pending connection request</h1>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          <div class="company-title">
+            <h3>All Connections</h3>
+          </div>
+          <div class="companies-list mb-1">
+            <div class="row">
+              {% for connection in connections %}
+              <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                <div class="company_profile_info">
+                  <div class="company-up-info">
+                    <img src="{{connection.profile.avatar.url}}" alt="" />
+                    <h3>{{connection.username}}</h3>
+                    <h4>Graphic Designer</h4>
+                    <ul>
+                      <li><a href="{% url 'chat' username=connection.username %}" title="" class="hire-us">Message</a></li>
+                      <li><a href="#" removee-id= "{{connection.id}}" data-role="Disconnect" class="follow">Disconnect</a></li>
+                    </ul>
+                  </div>
+                  <a
+                    href="{% url 'profile-list-view' user_slug=connection.profile.profile_slug %}"
+                    title=""
+                    class="view-more-pro">
+                    View Profile
+                  </a>
+                </div>
+              </div>
+              {% empty %}
+              <div class="row flex-column align-items-center m-auto ">
+                <h1 style="font-size: 30px; font-weight: 500; margin-bottom: 20px;"> Sorry but you currently have no connections</h1>
+                <p class="lead"> You can search and send connection request to user </p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+{% comment %}           
+          <div class="process-comm">
+            <div class="spinner">
+              <div class="bounce1"></div>
+              <div class="bounce2"></div>
+              <div class="bounce3"></div>
+            </div>
+          </div>
+        </div> {% endcomment %}
+      </section>
+      {% include 'landing/partials/footer.html' %}
+    </div>
+    {% include 'landing/partials/scripts.html' %}
+  </body>
+</html>

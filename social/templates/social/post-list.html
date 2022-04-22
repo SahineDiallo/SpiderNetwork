@@ -1,0 +1,216 @@
+{% extends 'landing/partials/base.html' %}
+{% comment %} {% load humanize %} {% endcomment %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load createDivOnlyOnce %}
+{% block header %} {% include 'landing/partials/header.html' %}{% endblock header %} 
+
+    {% block rightContent %}
+    <div class="main-left-sidebar no-margin sticky-top">
+        <div class="user-data full-width">
+        <div class="user-profile">
+        <div class="username-dt">
+        <div class="usr-pic">
+        <img src="{{request.user.profile.avatar.url}}" alt="">
+        </div>
+        </div>
+        <div class="user-specs">
+        <h3>{{request.user.username}}</h3>
+        <span>{{request.user.profile.work_at}}</span>
+        </div>
+        </div>
+        <ul class="user-fw-status">
+        <li>
+        <h4>Following</h4>
+        <span>{{following}}</span>
+        </li>
+        <li>
+        <h4>Followers</h4>
+        <span>{{followers}}</span>
+        </li>
+        <li>
+        <a href="{% url 'profile-list-view' user_slug=request.user.profile.profile_slug %}" title="">View Profile</a>
+        </li>
+        </ul>
+        </div>
+        <div class="tags-sec full-width">
+        <ul>
+        <li><a href="#" title="">About</a></li>
+         <li><a href="#" title="">Privacy Policy</a></li>
+        <li><a href="#" title="">Career</a></li>
+        <li><a href="#" title="">Copyright Policy</a></li>
+        </ul>
+        <div class="cp-sec">
+        <img src="images/logo2.png" alt="">
+        <p><img src="images/cp.png" alt="">Copyright 2019</p>
+        </div>
+        </div>
+        </div>
+    {% endblock rightContent %}
+    {% block content %}
+    {% include 'landing/partials/modals.html' %}
+    <div class="main-ws-sec">
+        <div class="post-topbar">
+            <div class="user-picy">
+                <img src="{{request.user.profile.avatar.url}}" alt="">
+            </div>
+            <div class="post-st">
+                <ul>
+                    <li><a class="post_project" href="{% url 'post-list-view' %}" title="">Post a Job</a></li>
+                    <li><a class="post-jb active" data-bs-toggle="modal" href="#CreatePostModal">Post</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="posts-section">
+            {% for post in posts %} 
+            <div class="post-bar" data-slug={{post.post_slug}}>
+                    <div class="post_topbar">
+
+                        <div class="usy-dt position-relative">
+                            <a href="{% url 'profile-list-view' user_slug=post.author.profile.profile_slug %}" class="stretched-link">
+                                <img src="{{post.author.profile.avatar.url}}" alt="post author" />
+                            
+                                <div class="usy-name">
+                                    <h3>{{post.author.username}}</h3>
+                                    <span><i class="fa fa-clock-o mx-1" aria-hidden="true"></i>{{post.date_posted|first_date_letter }}</span>
+                                    
+                                </div>
+                            </a>
+                        </div>
+                        {% if post.author == request.user %}
+                        <div class="ed-opts">
+                            <a href="#" title="" class="ed-opts-open"><i class="fa fa-ellipsis-v"></i></a>
+                            <ul class="ed-options">
+                                <li><a data-bs-toggle="modal" id="{{post.post_slug}}" href="#UpdatePostModal" role="button"><i class="fas fa-edit mr-2"></i> Edit Post</a></li>
+                                <li><a href="#DeletePostModal" data-bs-toggle="modal" data-slug="{{post.post_slug}}" title=""> <i class="fas fa-trash-alt mr-2"></i>Delete </a></li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="job_descp">  
+                        <p> {{post.content}}<a href="#" title="">view more</a></p>
+                        {% for image in post.images.all %}
+                            {% if forloop.first %}
+                                <div class="PreviewImagesContainer">
+                                <div class="post-images reverse">
+                            {% endif %}
+                            
+                            {% if forloop.counter|create_second_div_once %}
+                                    <div class="second_child_row">
+                                        {% for image in post.images.all %}
+                                            {% if not forloop.counter|divisibleby:3 and not forloop.counter|divisibleby:5 %}
+                                                <div class="post-images__child">
+                                                    <img src="{{image.image.url}}" alt="post-image" />
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                            {% endif %}
+
+                            {% if forloop.counter|create_first_div_once %}
+                                    <div class="second_child_row">
+                                        {% for image in post.images.all %}
+                                            {% if forloop.counter|divisibleby:3 or forloop.counter|divisibleby:5 %}
+                                                <div class="post-images__child">
+                                                    <img src="{{image.image.url}}" alt="post-image" />
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                            {% endif %}
+
+                            {% if forloop.last %}
+                                </div></div>
+                            {% endif %}
+                        {% endfor %}
+
+                <div class="mb-3 job-status-bar d-flex align-items-center justify-content-around py-1">                    
+                    <button class="com {% if request.user in post.likes.all %} is_liked {% endif %}" name="PostLike" data-slug="post_like_{{post.post_slug}}">
+                        <i class=" {% if request.user in post.likes.all %}fa {% else %} far {% endif %} fa-thumbs-up" style="pointer-events:none;"></i>
+                         Like <span class="likes-count">{{post.likes.all.count}}</span>
+                    </button>
+                    <button class="com" name="PostComments">
+                        <i class="far fa-comment-alt"></i> Comment <span class="{{post.post_slug}}_comments_count">{{post.comments.all.count}}</span>
+                    </button>
+                    <div class="post-views" style="cursor:default;"><i class="far fa-eye mr-1"></i>Views 50</div>
+                </div>
+                <div class="post-comment-{{post.post_slug}} mt-4">
+                    {% for comment in post.comments.all|two_last_comments %}
+                        {% if forloop.first %}
+                         <div class="comment-section">
+                            <div class="comment-sec">{% endif %}
+                                <ul class="comment_instance_{{comment.id}}">
+                                    <li>
+                                        <div class="comment-list">
+                                            <div class="bg-img">
+                                                <img src="{{comment.author.profile.avatar.url}}" style="width: 40px;" alt="">
+                                            </div> 
+                                            <div class="comment"> 
+                                                <h3>{{comment.author.username}}</h3>
+                                                <div> 
+                                                    <p>{{comment.content}}</p>
+                                                </div>
+                                                <a href="#" title="" class="active"><i class="fa fa-reply-all"></i>Reply</a>
+                                                <span style="display:inline;" class="com_date">
+                                                    <i class="fa fa-clock ml-1"></i>
+                                                    {{comment.date_commented|first_date_letter}}
+                                                </span>
+                                                <button name="PostLike" data-slug="comment_like_{{comment.comment_slug}}" class="com-action com mx-0  {% if request.user in comment.likes.all %} is_liked {% endif %}" style="padding: 1px 7px;">
+                                                    <i class=" {% if request.user in comment.likes.all %}fa {% else %} far {% endif %} fa-thumbs-up" style="pointer-events:none;"></i>
+                                                    <span class="likes-count" style="display:inline;pointer-events:none;">{{comment.likes.all.count}}</span>
+                                                </button>
+                                                {% if comment.author == request.user %}
+                                                    <span id="comment_delete_{{comment.id}}" class="com-action">
+                                                        <a data-bs-toggle="modal" data-slug="comment_{{comment.id}}" href="#DeleteCommentPostModal"> 
+                                                            <i class="fa fa-trash mx-1"></i>
+                                                        </a>
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>           
+                                    </li>
+                                </ul>
+
+                        {% if forloop.last %}
+                            </div>
+                        </div>{% endif %}
+                    {% endfor %}
+                    <div class="comment_box">             
+                        <div class="cm_img">
+                            <img src="{{request.user.profile.avatar.url}}" alt="">
+                        </div>
+                        <form method="post" data-slug="{{post.post_slug}}">
+                            {% csrf_token %}
+                            <textarea name="content" placeholder="Comment on this post here..." cols="40" rows="2" required="" id="id_content"></textarea>
+                            <button id="" name="commentpost" >Comment</button>
+                            <span class="loading-icon" style="float: right !important; margin-right: 3px; margin-top: 3px;">
+                                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+            {% endfor %}
+
+    
+          
+        </div>
+        </div>
+
+    {% endblock content %}
+
+
+    {% block leftContent %}
+        <div class="widget widget-about sticky-top">
+            <img src="images/wd-logo.png" alt="">
+            <h3>Track Friends on Spider</h3>
+            <span>Connect on a daily basis with peers</span>
+            <div class="sign_link">
+                <h3><a title="">Start up</a></h3>
+                <a title="">Learn More</a>
+            </div>
+        </div>
+    
+    {% endblock leftContent %}

@@ -1,0 +1,121 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load createDivOnlyOnce %}
+<div class="post-bar" data-slug={{post.post_slug}}>
+    <div class="post_topbar">
+        <div class="usy-dt">
+            <a href="{% url 'profile-list-view' user_slug=post.author.profile.profile_slug %}">
+                <img src="{{post.author.profile.avatar.url}}" alt="post author" />
+            
+                <div class="usy-name">
+                    <h3>{{post.author.username}}</h3>
+                    <span><i class="fa fa-clock-o mx-1" aria-hidden="true"></i>{{post.date_posted|first_date_letter }}</span>
+                </div>
+            </a>
+        </div>
+        <div class="ed-opts">
+            <a href="#" title="" class="ed-opts-open"><i class="fa fa-ellipsis-v"></i></a>
+            <ul class="ed-options">
+                <li><a data-bs-toggle="modal" id="{{post.post_slug}}" href="#UpdatePostModal" role="button"><i class="fas fa-edit mr-2"></i> Edit Post</a></li>
+                <li><a href="#DeletePostModal" data-bs-toggle="modal" data-slug="{{post.post_slug}}" title=""> <i class="fas fa-trash-alt mr-2"></i>Delete </a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="job_descp">  
+        <p> {{post.content}}<a href="#" title="">view more</a></p>
+        {% for image in post.images.all %}
+            {% if forloop.first %}
+                <div class="PreviewImagesContainer">
+                <div class="post-images reverse">
+            {% endif %}
+            
+            {% if forloop.counter|create_second_div_once %}
+                    <div class="second_child_row">
+                        {% for image in post.images.all %}
+                            {% if not forloop.counter|divisibleby:3 and not forloop.counter|divisibleby:5 %}
+                                <div class="post-images__child">
+                                    <img src="{{image.image.url}}" alt="post-image" />
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+            {% endif %}
+
+            {% if forloop.counter|create_first_div_once %}
+                    <div class="second_child_row">
+                        {% for image in post.images.all %}
+                            {% if forloop.counter|divisibleby:3 or forloop.counter|divisibleby:5 %}
+                                <div class="post-images__child">
+                                    <img src="{{image.image.url}}" alt="post-image" />
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+            {% endif %}
+
+            {% if forloop.last %}
+                </div></div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="mb-3 job-status-bar d-flex align-items-center justify-content-around py-1">                    
+            <button class="com {% if request.user in post.likes.all %} is_liked {% endif %}" name="PostLike" data-slug="post_like_{{post.post_slug}}">
+                <i class=" {% if request.user in post.likes.all %}fa {% else %} far {% endif %} fa-thumbs-up" style="pointer-events:none;"></i>
+                Like <span class="likes-count">{{post.likes.all.count}}</span>
+            </button>
+            <button class="com" name="PostComments">
+                <i class="far fa-comment-alt"></i> Comment <span class="{{post.post_slug}}_comments_count">{{post.comments.all.count}}</span>
+            </button>
+            <div class="post-views" style="cursor:default;"><i class="far fa-eye mr-1"></i>Views 50</div>
+        </div>
+        <div class="post-comment-{{post.post_slug}} mt-4">
+            {% for comment in post.comments.all|two_last_comments %}
+                {% if forloop.first %}
+                <div class="comment-section">
+                    <div class="comment-sec">{% endif %}
+                        <ul>
+                            <li>
+                                <div class="comment-list">
+                                    <div class="bg-img">
+                                        <img src="{{comment.author.profile.avatar.url}}" style="width: 40px;" alt="">
+                                    </div> 
+                                    <div class="comment"> 
+                                        <h3>{{comment.author.username}}</h3>
+                                        <div> 
+                                            <p>{{comment.content}}</p>
+                                        </div>
+                                        <a href="#" title="" class="active"><i class="fa fa-reply-all"></i>Reply</a>
+                                        <span style="display:inline;" class="com_date">
+                                            <i class="fa fa-clock ml-1"></i>
+                                            {{comment.date_commented|first_date_letter}}
+                                        </span>
+                                        <button name="PostLike" data-slug="comment_like_{{comment.comment_slug}}" class="com-action com mx-0  {% if request.user in comment.likes.all %} is_liked {% endif %}" style="padding: 1px 7px;">
+                                            <i class=" {% if request.user in comment.likes.all %}fa {% else %} far {% endif %} fa-thumbs-up" style="pointer-events:none;"></i>
+                                            <span class="likes-count" style="display:inline;pointer-events:none;">{{comment.likes.all.count}}</span>
+                                        </button>
+                                        <span id="comment_delete_{{comment.id}}" class="com-action">
+                                            <a data-bs-toggle="modal" data-slug="comment_{{comment.id}}" href="#DeleteCommentPostModal"> <i class="fa fa-trash mx-1"></i></a>
+                                        </span>
+                                    </div>
+                                </div>           
+                            </li>
+                        </ul>
+
+                {% if forloop.last %}
+                    </div>
+                </div>{% endif %}
+            {% endfor %}
+            <div class="comment_box">             
+                <div class="cm_img">
+                    <img src="/static/landing/images/bg-img4.png" alt="">
+                </div>
+                <form method="post" data-slug="{{post.post_slug}}">
+                    {% csrf_token %}
+                    <textarea name="content" placeholder="Comment on this post here..." cols="40" rows="2" required="" id="id_content"></textarea>
+                    <button id="" name="commentpost" >Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

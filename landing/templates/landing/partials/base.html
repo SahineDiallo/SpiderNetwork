@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include "landing/partials/head.html" %}
+  </head>
+  <body>
+    {% block header %}{% endblock header %} {% block sectionCover %}{% endblock sectionCover %}
+    <main>
+      <div class="main-section">
+        <div class="container">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          <div class="main-section-data {% if not no_padding %}mt-5{% endif %}">
+            <div class="row">
+              
+              <div class="col-lg-3 col-md-4 pd-left-none no-pd">
+                {% block rightContent %} {% endblock rightContent %}
+              </div>
+              <div class="col-lg-6 col-md-8 no-pd">
+                {% block content %} {% endblock content %}
+              </div>
+              <div class="col-lg-3 pd-right-none no-pd sticky-top">
+                {% block leftContent %}{% endblock leftContent %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    {% include 'landing/partials/footer.html' %} {% include "landing/partials/scripts.html" %}
+  </body>
+</html>

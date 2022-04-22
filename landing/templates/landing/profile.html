@@ -1,0 +1,554 @@
+{% extends 'landing/partials/base.html' %} 
+{% load crispy_forms_tags %} 
+{% load static %}
+{% load createDivOnlyOnce %}
+{% block header %} {% include 'landing/partials/header.html' %}{% endblock header %}
+<div class="wrapper">
+  {% block sectionCover %}
+  <section class="cover-sec">
+    <img src="{% static 'landing/images/spider-cover.jpg' %}" alt="" />
+  </section>
+  {% endblock sectionCover %}
+   {% block rightContent %}
+    <div class="main-left-sidebar">
+      <div class="user_profile">
+        <div class="user-pro-img position-relative">
+          <img src="{{profile.avatar.url}}" alt="" />
+          {% if is_profile_owner %}
+          <span class="add-dp">
+            <a name="avatar" href="#UserProfileModal" data-bs-toggle="modal" style="color: #000;">
+              <i class="fa fa-camera" aria-hidden="true" style="pointer-events: none;"></i>
+            </a>
+          </span>
+          {% endif %}
+        </div>
+        <div class="user_pro_status">
+          {% if not is_profile_owner %}
+          <ul class="flw-hr">
+            <li>             
+                {% if not follower %}
+                <button name="flww" class="flww_btn">
+                   Follow
+                </button>
+                {% else %}
+                <button name="unflww" class="flww_btn">
+                   Unfollow
+                </button>
+                {% endif %}
+            </li>
+          </ul>
+          {% endif %}
+          <ul class="flw-status">
+            <li>
+              <span >Following</span>
+              <b class="following">{{following}}</b>
+            </li>
+            <li>
+              <span >Followers</span>
+              <b class="followers">{{followers}}</b>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="suggestions full-width" id="user_profile">
+        <div class="sd-title">
+          <h3>Informations</h3>
+          <i class="fa fa-ellipsis-v"></i>
+        </div>
+        <div class="suggestions-list">
+          <div class="suggestion-usd">
+            <p class="bio">
+              {% if not is_profile_owner %} <i class="fa fa-address-book mr-2" style="margin-top: -1px;font-size: 21px;"></i> {% endif %}            
+              {% if profile.bio %} {{profile.bio}} {% endif %}
+          </p>
+            {% if is_profile_owner %}  
+            <a data-bs-toggle="modal" class="profile-intro" href="#UserProfileModal" name="bio" title="">
+              <i class="fa fa-address-book mr-2"></i>
+              {% if profile.bio %} Edit {% else %} Add {% endif %} Bio
+            </a>
+            {% endif %}
+          </div>
+          <div class="suggestion-usd">
+            <p class="full_name">
+              {% if not is_profile_owner %} <i class="fa fa-user mr-2" style="margin-top: -1px;font-size: 21px;"></i> {% endif %}            
+              {% if profile.full_name %} {{profile.full_name}} {% endif %}
+          </p>
+            {% if is_profile_owner %}  
+            <a data-bs-toggle="modal" class="profile-intro" href="#UserProfileModal" name="full_name" title="">
+              <i class="fa fa-user mr-2"></i>
+              {% if profile.full_name %} Edit {% else %} Add {% endif %}Full name
+            </a>
+            {% endif %}
+          </div>
+          <div class="suggestion-usd">
+            <p class="location">
+              {% if not is_profile_owner %} <i class="fa fa-map-marker-alt mr-2" style="margin-top: -1px;font-size: 21px;"></i> {% endif %}            
+              {% if profile.location %} {{profile.location}} {% endif %}
+          </p>
+            {% if is_profile_owner %}  
+            <a data-bs-toggle="modal" class="profile-intro" href="#UserProfileModal" name="location" title="">
+              <i class="fa fa-map-marker-alt mr-2"></i>
+              {% if profile.location %} Edit {% else %} Add {% endif %} Location
+            </a>
+            {% endif %}
+          </div>
+          <div class="suggestion-usd">
+            <p class="work_at">
+              {% if not is_profile_owner %} <i class="fa fa-work mr-2" style="margin-top: -1px;font-size: 21px;"></i> {% endif %}            
+              {% if profile.work_at %} {{profile.work_at}} {% endif %}
+          </p>
+            {% if is_profile_owner %}  
+            <a data-bs-toggle="modal" class="profile-intro" href="#UserProfileModal" name="work_at" title="">
+              <i class="fa fa-work mr-2"></i>
+              {% if profile.work_at %} Edit {% else %} Add {% endif %} work or study at
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endblock rightContent %} 
+  {% block content %}
+  <div class="main-ws-sec">
+    <!-- User Profile modal -->
+    <div class="modal fade" id="UserProfileModal" data-url="{% url 'post-list-view' %}" tabindex="-1">
+      <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">Update Profile</h5>
+                  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                      &times;
+                  </button> 
+          </div>       
+          <div class="modal-body">
+              <div class="container-fluid">
+                <div class="process-comm">
+                  <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                  </div>
+                </div>
+                 {% comment %} <div class="PreviewImagesContainer">
+                     
+                 </div> {% endcomment %}
+                 <div class="maxFileError">
+                  <p class="errornote">You cannot upload more than 5 images</p>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+              <button type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" form="UserProfileForm" id="UpdateProfileBtn" class="btn btn-sm btn-primary">Update</button>
+              <span class="loading-icon"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+          </div>
+          
+      </div>
+      </div>
+    </div>
+    <!-- end of user profile modal -->
+    {% include 'landing/partials/modals.html' %}
+    <div class="user-tab-sec">
+      <h3>
+        {% if profile.full_name %}{{profile.full_name}} {% else %}{{profile.user.username}}{% endif %}
+      </h3>
+      <div class="star-descp">
+        <span>{{profile.work_at}}</span>
+        <ul>
+          <li><i class="fa fa-star"></i></li>
+          <li><i class="fa fa-star"></i></li>
+          <li><i class="fa fa-star"></i></li>
+          <li><i class="fa fa-star"></i></li>
+          <li><i class="fa fa-star-half-o"></i></li>
+        </ul>
+      </div>
+      <div class="post-topbar d-flex align-items-center flex-column justify-content-between" style="border-top: 3px solid #ccc">
+        <div class="post-st con_sect">
+          <button name=""  class="btn btn-outline-primary" >
+            <a id="all-connections" href="{% url 'all-connection-view' profile_slug=profile.profile_slug %}"> Connections</a>
+            <span>{{connections|length}}</span>
+          </button>
+          {% if is_profile_owner %}
+            <button name="" id="" class="btn btn-outline-dark">
+              <a href="{% url 'all-connection-view' profile_slug=profile.profile_slug %}"> Connection</a> Request 
+              <span>{{con_request|length}}</span>
+            </button>
+          {% endif %}
+          <div id="forge_link_status">
+            {% if ForgeLinkStatus == 0 %}
+              <button id="ForgeNewLink" class="btn btn-outline-dark" >Connect</button>
+            {% elif ForgeLinkStatus == 1 %}
+              <button id="CancelLinkForge" class="btn btn-outline-dark" >Cancel Connection Request</button>
+            
+            {% endif %}
+          </div>
+          
+        </div>
+        {% if ForgeLinkStatus == 2 %}
+              <div id="requestAcc_or_dec">
+                  <div class="req_sender">
+                    <p>{{req_sender}} sent you a connection request</p>
+                  </div>
+                  <div>
+                    <button data-request-id="{{forgeLink_id}}" data-role="AcceptForgeLink" class="btn btn-outline-success" >Accept</button>
+                    <button data-request-id="{{forgeLink_id}}" data-role="DeleteForgeLink" class="btn btn-outline-dark" >Delete</button>
+                  </div>
+              </div>
+          {% endif %}
+      </div>
+    </div>
+    <div class="product-feed-tab current" id="feed-dd">
+      <div class="posts-section">
+        {% for post in posts %} 
+                <div class="post-bar">
+                    <div class="post_topbar">
+
+                        <div class="usy-dt position-relative">
+                          <a href="{% url 'profile-list-view' user_slug=post.author.profile.profile_slug %}" class="stretched-link">
+                            <img src="{{post.author.profile.avatar.url}}" alt="post author" />
+                        
+                            <div class="usy-name">
+                                <h3>{{post.author.username}}</h3>
+                                <span><i class="fa fa-clock-o mx-1" aria-hidden="true"></i>{{post.date_posted|first_date_letter }}</span>                
+                            </div>
+                          </a>
+                        </div>
+                        {% if post.author == request.user %}
+                        <div class="ed-opts">
+                            <a href="#" title="" class="ed-opts-open"><i class="fa fa-ellipsis-v"></i></a>
+                            <ul class="ed-options">
+                                <li><a data-bs-toggle="modal" id="{{post.post_slug}}" href="#UpdatePostModal" role="button"><i class="fas fa-edit mr-2"></i> Edit Post</a></li>
+                                <li><a href="#DeletePostModal" data-bs-toggle="modal" data-slug="{{post.post_slug}}" title=""> <i class="fas fa-trash-alt mr-2"></i>Delete </a></li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="job_descp">  
+                        <p> {{post.content}}<a href="#" title="">view more</a></p>
+                        {% for image in post.images.all %}
+                            {% if forloop.first %}
+                                <div class="PreviewImagesContainer">
+                                <div class="post-images reverse">
+                            {% endif %}
+                            
+                            {% if forloop.counter|create_second_div_once %}
+                                    <div class="second_child_row">
+                                        {% for image in post.images.all %}
+                                            {% if not forloop.counter|divisibleby:3 and not forloop.counter|divisibleby:5 %}
+                                                <div class="post-images__child">
+                                                    <img src="{{image.image.url}}" alt="post-image" />
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                            {% endif %}
+
+                            {% if forloop.counter|create_first_div_once %}
+                                    <div class="second_child_row">
+                                        {% for image in post.images.all %}
+                                            {% if forloop.counter|divisibleby:3 or forloop.counter|divisibleby:5 %}
+                                                <div class="post-images__child">
+                                                    <img src="{{image.image.url}}" alt="post-image" />
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                            {% endif %}
+
+                            {% if forloop.last %}
+                                </div></div>
+                            {% endif %}
+                        {% endfor %}
+
+                <div class="mb-3 job-status-bar d-flex align-items-center justify-content-around py-1">                    
+                    <button class="com {% if request.user in post.likes.all %} is_liked {% endif %}" name="PostLike" data-slug="post_like_{{post.post_slug}}">
+                        <i class=" {% if request.user in post.likes.all %}fa {% else %} far {% endif %} fa-thumbs-up" style="pointer-events:none;"></i>
+                        Like <span class="likes-count">{{post.likes.all.count}}</span>
+                    </button>
+                    <button class="com" name="PostComments">
+                        <i class="far fa-comment-alt"></i> Comment <span class="{{post.post_slug}}_comments_count">{{post.comments.all.count}}</span>
+                    </button>
+                    <div class="post-views" style="cursor:default;"><i class="far fa-eye mr-1"></i>Views 50</div>
+                </div>
+                <div class="post-comment-{{post.post_slug}} mt-4">
+                    {% for comment in post.comments.all|two_last_comments %}
+                        {% if forloop.first %}
+                         <div class="comment-section">
+                            <div class="comment-sec">{% endif %}
+                                <ul class="comment_instance_{{comment.id}}">
+                                    <li>
+                                        <div class="comment-list">
+                                            <div class="bg-img">
+                                                <img src="{{comment.author.profile.avatar.url}}" style="width: 40px;" alt="">
+                                            </div> 
+                                            <div class="comment"> 
+                                                <h3>{{comment.author.username}}</h3>
+                                                <div> 
+                                                    <p>{{comment.content}}</p>
+                                                </div>
+                                                <a href="#" title="" class="active"><i class="fa fa-reply-all"></i>Reply</a>
+                                                <span style="display:inline;" class="com_date">
+                                                  <i class="fa fa-clock ml-1"></i>
+                                                   {{comment.date_commented|first_date_letter}}
+                                                </span>
+                                                <button name="PostLike" data-slug="comment_like_{{comment.comment_slug}}" class="com-action com mx-0  {% if request.user in comment.likes.all %} is_liked {% endif %}" style="padding: 1px 7px;">
+                                                  <i class=" {% if request.user in comment.likes.all %}fa {% else %} far {% endif %} fa-thumbs-up" style="pointer-events:none;"></i>
+                                                  <span class="likes-count" style="display:inline;pointer-events:none;">{{comment.likes.all.count}}</span>
+                                                </button>
+                                                {% if comment.author == request.user %}
+                                                    <span id="comment_delete_{{comment.id}}" class="com-action">
+                                                        <a data-bs-toggle="modal" data-slug="comment_{{comment.id}}" href="#DeleteCommentPostModal"> 
+                                                          <i class="fa fa-trash mx-1"></i>
+                                                        </a>
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>           
+                                    </li>
+                                </ul>
+
+                        {% if forloop.last %}
+                            </div>
+                        </div>{% endif %}
+                    {% endfor %}
+                    <div class="comment_box">             
+                        <div class="cm_img">
+                            <img src="{{request.user.profile.avatar.url}}" alt="profile-image">
+                        </div>
+                        <form method="post" data-slug="{{post.post_slug}}">
+                            {% csrf_token %}
+                            <textarea name="content" placeholder="Comment on this post here..." cols="40" rows="2" required="" id="id_content"></textarea>
+                            <button id="" name="commentpost" >Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+            {% endfor %}
+        
+        {% comment %} <div class="process-comm">
+          <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+          </div>
+        </div> {% endcomment %}
+      </div>
+    </div>
+    <div class="product-feed-tab" id="info-dd">
+      <div class="user-profile-ov">
+        <h3>Overview</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+          tempor aliquam felis, nec condimentum ipsum commodo id. Vivamus sit
+          amet augue nec urna efficitur tincidunt. Vivamus consectetur aliquam
+          lectus commodo viverra. Nunc eu augue nec arcu efficitur faucibus.
+          Aliquam accumsan ac magna convallis bibendum. Quisque laoreet augue
+          eget augue fermentum scelerisque. Vivamus dignissim mollis est dictum
+          blandit. Nam porta auctor neque sed congue. Nullam rutrum eget ex at
+          maximus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Donec eget vestibulum lorem.
+        </p>
+      </div>
+      <div class="user-profile-ov st2">
+        <h3>Experience</h3>
+        <h4>Web designer</h4>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+          tempor aliquam felis, nec condimentum ipsum commodo id. Vivamus sit
+          amet augue nec urna efficitur tincidunt. Vivamus consectetur aliquam
+          lectus commodo viverra.
+        </p>
+        <h4>UI / UX Designer</h4>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+          tempor aliquam felis, nec condimentum ipsum commodo id.
+        </p>
+        <h4>PHP developer</h4>
+        <p class="no-margin">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+          tempor aliquam felis, nec condimentum ipsum commodo id. Vivamus sit
+          amet augue nec urna efficitur tincidunt. Vivamus consectetur aliquam
+          lectus commodo viverra.
+        </p>
+      </div>
+      <div class="user-profile-ov">
+        <h3>Education</h3>
+        <h4>Master of Computer Science</h4>
+        <span>2015 - 2018</span>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+          tempor aliquam felis, nec condimentum ipsum commodo id. Vivamus sit
+          amet augue nec urna efficitur tincidunt. Vivamus consectetur aliquam
+          lectus commodo viverra.
+        </p>
+      </div>
+      <div class="user-profile-ov">
+        <h3>Location</h3>
+        <h4>India</h4>
+        <p>151/4 BT Chownk, Delhi</p>
+      </div>
+      <div class="user-profile-ov">
+        <h3>Skills</h3>
+        <ul>
+          <li><a href="#" title="">HTML</a></li>
+          <li><a href="#" title="">PHP</a></li>
+          <li><a href="#" title="">CSS</a></li>
+          <li><a href="#" title="">Javascript</a></li>
+          <li><a href="#" title="">Wordpress</a></li>
+          <li><a href="#" title="">Photoshop</a></li>
+          <li><a href="#" title="">Illustrator</a></li>
+          <li><a href="#" title="">Corel Draw</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="product-feed-tab" id="portfolio-dd">
+      <div class="portfolio-gallery-sec">
+        <h3>Portfolio</h3>
+        <div class="gallery_pf">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img1.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img2.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img3.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img4.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img5.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img6.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img7.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img8.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img9.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+              <div class="gallery_pt">
+                <img src="images/resources/pf-img10.jpg" alt="" />
+                <a href="#" title=""><img src="images/all-out.png" alt="" /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock content %} {% block leftContent %}
+  <div class="right-sidebar">
+    <div class="message-btn">
+      <a href="#" title=""><i class="fa fa-envelope"></i> Message</a>
+    </div>
+    <div class="widget widget-portfolio">
+      <div class="wd-heady">
+        <h3>Portfolio</h3>
+        <img src="images/photo-icon.png" alt="" />
+      </div>
+      <div class="pf-gallery">
+        <ul>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery1.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery2.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery3.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery4.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery5.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery6.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery7.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery8.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery9.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery10.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery11.png" alt=""
+            /></a>
+          </li>
+          <li>
+            <a href="#" title=""
+              ><img src="images/resources/pf-gallery12.png" alt=""
+            /></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    {% endblock leftContent %}
+  </div>
+</div>

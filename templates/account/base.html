@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  {% load static %}
+  <head>
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+    {% include 'landing/partials/head.html' %}
+  </head>
+  <body class="sign-in">
+      <div class="wrapper">
+        <div class="sign-in-page">
+          <div class="signin-popup">
+            <div class="signin-pop">
+              {% block body %}
+                {% if messages %}
+                  <div>
+                    <strong>Messages:</strong>
+                    <ul>
+                      {% for message in messages %}
+                      <li>{{message}}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="cmp-info">
+                      <div class="cm-logo">
+                        <img src="{% static 'landing/images/login_logo.png' %}" alt="">
+                        <p>
+                          Spider, is a global freelancing platform and social networking where businesses 
+                          and independent professionals connect and collaborate remotely
+                        </p>
+                      </div>
+                      <img src="images/cm-main-img.png" alt="">
+                    </div>
+                  </div>
+                      
+                        {% block content %}
+                        {% endblock %}
+                      
+                    
+                </div>
+              {% endblock %}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      
+
+      
+
+    {% block extra_body %}
+    {% endblock %}
+    {% include 'landing/partials/scripts.html' %}
+  </body>
+</html>

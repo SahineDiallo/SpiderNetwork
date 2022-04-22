@@ -1,0 +1,40 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load createDivOnlyOnce %}
+{% crispy form %}
+{% if post.images.all %}
+    {% for image in post.images.all %}
+        {% if forloop.first %}
+            <div class="PreviewImagesContainer">
+            <div class="post-images reverse">
+        {% endif %}
+
+        {% if forloop.counter|create_second_div_once %}
+                <div class="second_child_row">
+                    {% for image in post.images.all %}
+                        {% if not forloop.counter|divisibleby:3 and not forloop.counter|divisibleby:5 %}
+                            <div class="post-images__child">
+                                <img src="{{image.image.url}}" alt="post-image" />
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+        {% endif %}
+
+        {% if forloop.counter|create_first_div_once %}
+                <div class="second_child_row">
+                    {% for image in post.images.all %}
+                        {% if forloop.counter|divisibleby:3 or forloop.counter|divisibleby:5 %}
+                            <div class="post-images__child">
+                                <img src="{{image.image.url}}" alt="post-image" />
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+        {% endif %}
+
+    {% if forloop.last %}</div></div>{% endif %}
+    {% endfor %}
+{% else %}
+    <div class="PreviewImagesContainer"></div>
+{% endif %}

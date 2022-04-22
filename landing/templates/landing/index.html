@@ -1,0 +1,15 @@
+{% extends 'landing/partials/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-sm-12 text-center">
+            <h1 class="display-2">Connect Your World!</h1>
+            <p class="lead mt-3">Follow people who interest you, Stay up to day on the latest news and Join conversions </p>
+            <div class="d-flex align-items-center justify-content-center">
+                <a href="{% url 'account_login' %}" class="btn btn-secondary mr-2">Login Here</a>
+                <a href="{% url 'account_signup' %}" class="btn btn-dark mr-2">Sign Up Now</a>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

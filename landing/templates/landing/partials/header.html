@@ -1,0 +1,186 @@
+{% load static %}
+{% load createDivOnlyOnce %}
+<header>
+  <div class="container">
+    <div class="header-data">
+      <div class="logo">
+        <a href="{% url 'post-list-view' %}" title=""><img src="{% static 'landing/images/main_logo.png' %}" alt="" style="width: 38px;" /></a>
+      </div>
+      <div class="search-bar">
+        <form method="get" action={% url 'search-list' %}>
+          <input type="text" name="q" placeholder="Search by name or email..." />
+          <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+      <nav>
+        <ul>
+          <li>
+            <a href="{% url 'post-list-view' %}">
+              <span><i class="fa fa-home" aria-hidden="true"></i></span>
+              Home
+            </a>
+          </li>
+
+          <li class="position-relative">
+            <a title="" class="not-box-openm">
+              <span><i class="fa fa-envelope"></i></span>
+                Messages
+                {% if msg_notif_count %}
+                  <span class="notification badge badge-danger">{{msg_notif_count}}</span>
+                {% endif %}
+            </a>
+            <div class="notification-box msg" id="message">
+              <div class="nt-title">
+                <h4>Setting</h4>
+                <a href="#" title="">Clear all</a>
+              </div>
+              <div class="nott-list">
+                {% for notif in msg_notifications  %}
+                <a href="{% url 'profile-list-view' user_slug=notif.user_from.profile.profile_slug %}">
+                  <div class="notfication-details">
+                    <div class="noty-user-img">
+                      <img src="{{notif.user_from.profile.avatar.url}}" alt="" />
+                    </div>
+                    <div class="notification-info">
+                      <h3>
+                        <a href="{% url 'profile-list-view' user_slug=notif.user_from.profile.profile_slug %}" title="">{{notif.user_from.username}}</a>
+                        {{notif.message}}.
+                      </h3>
+                      <span>{{notif.date_sent|first_date_letter}}</span>
+                    </div>
+                  </div>
+                </a>
+                {% empty %}
+                <div class="notfication-details no-notif">
+                  <div class="notification-info">
+                    <h3>                      
+                      You have no pending message notification.
+                    </h3>
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="view-all-nots">
+                  <a href="messages.html" title="">View All Messsages</a>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="position-relative">
+            <a title="" class="not-box-open">
+              <span><i class="fa fa-bell"></i></span>
+                Notification
+                {% if notifications %}
+                  {% if notif_count %}
+                  <span class="notification badge badge-danger">
+                     {{notif_count}}
+                  </span>
+                  {% endif %}
+                {% endif %}
+            </a>
+            <div class="notification-box noti" id="notification">
+              <div class="nt-title">
+                <h4>Setting</h4>
+                <a href="#" title="">Clear all</a>
+              </div>
+              <div class="nott-list">
+                {% for notif in notifications  %}
+                <a href="{% url 'profile-list-view' user_slug=notif.user_from.profile.profile_slug %}">
+                  <div class="notfication-details">
+                    <div class="noty-user-img">
+                      <img src="{{notif.user_from.profile.avatar.url}}" alt="" />
+                    </div>
+                    <div class="notification-info">
+                      <h3>
+                        <a href="{% url 'profile-list-view' user_slug=notif.user_from.profile.profile_slug %}" title="">{{notif.user_from.username}}</a>
+                        {{notif.message}}.
+                      </h3>
+                      <span>{{notif.date_sent|first_date_letter}}</span>
+                    </div>
+                  </div>
+                </a>
+                {% empty %}
+                <div class="notfication-details no-notif">
+                  {% comment %} <div class="noty-user-img">
+                    <img src="{{notif.user_from.profile.avatar.url}}" alt="" />
+                  </div> {% endcomment %}
+                  <div class="notification-info">
+                    <h3>                      
+                      You have no pending notification.
+                    </h3>
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="view-all-nots">
+                  <a href="#" title="">View All Notification </a>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="menu-btn">
+        <a href="#" title=""><i class="fa fa-bars"></i></a>
+      </div>
+      <div class="user-account">
+        <div class="user-info">
+          <img src="{{request.user.profile.avatar.url}}" alt="" />
+          <a href="#" title="">{{request.user.username}}</a>
+          <i class="fa fa-sort-down"></i>
+        </div>
+        <div class="user-account-settingss">
+          <h3 class="tc">
+            <a
+              href="{% url 'profile-list-view' user_slug=request.user.profile.profile_slug %}"
+              title=""
+            >
+              View my profile
+            </a>
+          </h3>
+          <h3>Online Status</h3>
+          <ul class="on-off-status">
+            <li>
+              <div class="fgt-sec">
+                <input type="radio" name="cc" id="c5" />
+                <label for="c5">
+                  <span></span>
+                </label>
+                <small>Online</small>
+              </div>
+            </li>
+            <li>
+              <div class="fgt-sec">
+                <input type="radio" name="cc" id="c6" />
+                <label for="c6">
+                  <span></span>
+                </label>
+                <small>Offline</small>
+              </div>
+            </li>
+          </ul>
+          <h3>Custom Status</h3>
+          <div class="search_form">
+            <form>
+              <input type="text" name="search" />
+              <button type="submit">Ok</button>
+            </form>
+          </div>
+          <h3>Setting</h3>
+          <ul class="us-links">
+            <li>
+              <a href="profile-account-setting.html" title=""
+                >Account Setting</a
+              >
+            </li>
+            <li><a href="#" title="">Privacy</a></li>
+            <li><a href="#" title="">Faqs</a></li>
+            <li><a href="#" title="">Terms & Conditions</a></li>
+          </ul>
+
+          <h3 class="tc">
+            <a href="{% url 'account_logout' %}" title="">Logout</a>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
