@@ -44,7 +44,7 @@ Search for friend online and invite them to join you.
 ## Preview Images
 
 ![image](https://i.imgur.com/F2cu8v9.gif)
-![image](https://user-images.githubusercontent.com/101523484/163738733-3ab1d450-f309-4077-8fa6-39fa36b41fc1.png)
-![image](https://user-images.githubusercontent.com/101523484/163738805-a3fe3306-6cc2-4d12-9cd6-2cf16d0e8651.gif)
-![image](https://user-images.githubusercontent.com/101523484/163738849-a364929b-104c-44da-bbc7-6a4513cea0ff.gif)
-![image](https://user-images.githubusercontent.com/101523484/163738912-9ce21551-7b51-46ac-95a2-66bac33e7749.gif)
+![image](https://i.imgur.com/hdMOmur.png)
+![image](https://i.imgur.com/ZZcp30m.png)
+![image](https://i.imgur.com/YjzF6Zu.png)
+![image](https://i.imgur.com/L6wQUP1.png)
